@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 run = True
 crops = ["corn", "wheat", "sweet corn", "cotton", "apple", "rice", "soybean", "potato", "melon", "hay", "sweet potato"]
 budget = 1000
