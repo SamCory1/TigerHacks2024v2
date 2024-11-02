@@ -30,24 +30,28 @@ def main():
     crops_to_buy = []
 
     while total_cost < budget:
-        crop_choice = int(input("Enter the number of the crop you want to buy (0 to finish): "))
-        if crop_choice == 0:
+        crop_name = input("Enter the name of the crop you want to buy (or type 'exit' to finish): ").strip().lower()
+        if crop_name == 'exit':
             break
-        if 1 <= crop_choice <= len(crop_list):
-            crop_name = crop_list[crop_choice - 1]
-            crop_cost = get_price(crop_name)
-            total_cost += crop_cost
-            if total_cost <= budget:
-                crops_to_buy.append(crop_name)
-                print(f"{crop_name} added. Total cost is now ${total_cost:.2f}.")
+        if crop_name in crop_list:
+            amount = int(input(f"How many acres of {crop_name} do you want to buy? "))
+            crop_cost = get_price(crop_name) * amount
+            if total_cost + crop_cost <= budget:
+                total_cost += crop_cost
+                crops_to_buy.append((crop_name, amount))
+                remaining_budget = budget - total_cost
+                print(f"{amount} acres of {crop_name} added. Total cost is now ${total_cost:.2f}. Remaining budget: ${remaining_budget:.2f}.")
             else:
-                total_cost -= crop_cost
-                print("You don't have enough budget for this crop.")
+                print("You don't have enough budget for this purchase.")
         else:
-            print("Invalid choice. Please try again.")
+            print("Invalid crop name. Please try again.")
 
-    print("You have purchased: ", ", ".join(crops_to_buy))
+    if crops_to_buy:
+        print("You have purchased:")
+        for crop, acres in crops_to_buy:
+            print(f"{acres} acres of {crop}")
     print(f"Total spent: ${total_cost:.2f}")
+    print(f"Remaining budget: ${budget - total_cost:.2f}")
 
 if __name__ == "__main__":
     main()

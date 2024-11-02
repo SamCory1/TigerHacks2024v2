@@ -36,4 +36,5 @@ while run:
             crop_sale = round(crop_yield* 11.20, 2)
             print(f"This is your expected return: {crop_yield} bushels of soybeans; worth ${crop_sale}")
     if crop == 'end':
+        print("Returning to Screen")
         run = False
