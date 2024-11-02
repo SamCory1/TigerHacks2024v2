@@ -1,59 +1,53 @@
-run = True
-crops = ["corn", "wheat", "sweet corn", "cotton", "apple", "rice", "soybean", "potato", "melon", "hay", "sweet potato"]
-budget = 10000
-corn_price_per_acre = 120
-wheat_price_per_acre = 40
-sweetcorn_price_per_acre = 250
-cotton_price_per_acre = 70
-apple_price_per_acre = 300
-rice_price_per_acre = 50
-soybean_price_per_acre = 70
-potato_price_per_acre = 335
-melon_price_per_acre = 335
-hay_price_per_acre = 50
-sweetpotato_price_per_acre = 335
+# FarmExpenseTracker.py
 
-print(f"The current budget is: ${budget}")
-while run:
-    answer = input("What crop would you like to buy? ").lower()
-    if answer in ["End", "end", "END"]:
-        run = False
-        continue
+from CropReccomendations import get_recommendations, get_price, states, seasons
 
-    if answer in crops:
-        try:
-           acre = float(input("How many acres would you like to plant on? "))
-           if answer == "corn":
-               cost = acre * corn_price_per_acre
-           elif answer == "wheat":
-               cost = acre * wheat_price_per_acre
-           elif answer == "sweet corn":
-               cost = acre * sweetcorn_price_per_acre
-           elif answer == "cotton":
-               cost = acre * cotton_price_per_acre
-           elif answer == "apple":
-               cost = acre * apple_price_per_acre
-           elif answer == "rice":
-               cost = acre * rice_price_per_acre
-           elif answer == "soybean":
-               cost = acre * soybean_price_per_acre
-           elif answer == "potato":
-               cost = acre * potato_price_per_acre
-           elif answer == "melon":
-               cost = acre * melon_price_per_acre
-           elif answer == "hay":
-               cost = hay_price_per_acre
-           elif answer == "sweet potato":
-               cost = acre * sweetpotato_price_per_acre
+def main():
+    budget = float(input("Enter your budget for purchasing crops: "))
+    print("Available states: ", ", ".join(states))
+    state = input("Enter your state: ").strip().lower()
+    season = input("Enter the current season (spring, summer, fall): ").strip().lower()
 
-           if cost > budget:
-               print("Price exceeds budget.")
-           else:
-               budget = budget - cost
-               print(f"You have bought {acre} acres of {answer}. Your remaining budget is ${budget}")
-        except ValueError:
-            print("Must enter a number.")
-    else:
-        print("Not in crop selection.")
+    if state not in states:
+        print("Invalid state. Please run the program again.")
+        return
 
+    if season not in seasons:
+        print("Invalid season. Please run the program again.")
+        return
 
+    crop_list = get_recommendations(state, season)
+
+    if not crop_list:
+        print("No recommendations available for your state and season.")
+        return
+
+    print("Recommended crops for {} in {}:".format(state.title(), season.title()))
+    for index, crop in enumerate(crop_list, 1):
+        print(f"{index}. {crop} (Cost per acre: ${get_price(crop)})")
+
+    total_cost = 0
+    crops_to_buy = []
+
+    while total_cost < budget:
+        crop_choice = int(input("Enter the number of the crop you want to buy (0 to finish): "))
+        if crop_choice == 0:
+            break
+        if 1 <= crop_choice <= len(crop_list):
+            crop_name = crop_list[crop_choice - 1]
+            crop_cost = get_price(crop_name)
+            total_cost += crop_cost
+            if total_cost <= budget:
+                crops_to_buy.append(crop_name)
+                print(f"{crop_name} added. Total cost is now ${total_cost:.2f}.")
+            else:
+                total_cost -= crop_cost
+                print("You don't have enough budget for this crop.")
+        else:
+            print("Invalid choice. Please try again.")
+
+    print("You have purchased: ", ", ".join(crops_to_buy))
+    print(f"Total spent: ${total_cost:.2f}")
+
+if __name__ == "__main__":
+    main()

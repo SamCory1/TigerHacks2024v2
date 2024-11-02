@@ -1,4 +1,4 @@
-run = True
+# CropRecommendations.py
 
 states = [
     "alabama", "alaska", "arizona", "arkansas", "california",
@@ -70,18 +70,43 @@ recommendations = {
     "wyoming": {"spring": ["lettuce", "radishes"], "summer": ["beans", "corn"], "fall": ["winter squash", "garlic"]}
 }
 
-print("Welcome to the Crop Recommendation Simulator")
-while run:
-    state_of_residence = input("What state do you reside in? ").lower()
-    if state_of_residence in ["end", "End", "END"]:
-        run = False
-        continue
-    if state_of_residence in states:
-        current_season = input("What is the current season? ").lower()
-        if current_season in seasons:
-            crops = recommendations[state_of_residence][current_season]
-            print(f"In {state_of_residence.capitalize()}, during {current_season}, you can plant: {', '.join(crops)}.")
-        else:
-            print("Invalid season entered. Please enter spring, summer, or fall.")
+# Prices per acre for each crop
+crop_prices = {
+    "tomatoes": 3000,
+    "peppers": 2500,
+    "corn": 1500,
+    "okra": 2000,
+    "collards": 1000,
+    "turnips": 900,
+    "lettuce": 2500,
+    "radishes": 1000,
+    "potatoes": 2000,
+    "carrots": 1800,
+    "cabbage": 1500,
+    "kale": 1200,
+    "squash": 2000,
+    "melons": 2500,
+    "garlic": 3000,
+    "pumpkins": 1800,
+    "peas": 1200,
+    "blueberries": 4000,
+    "cucumbers": 2500,
+    "eggplant": 2200,
+    "soybeans": 1000,
+    "wheat": 800,
+    "sorghum": 1200,
+    "sunflowers": 1500,
+    "sweet potatoes": 2200,
+    "berries": 3500,
+    "apples": 3000,
+}
+
+def get_recommendations(state, season):
+    state = state.lower()
+    if state in recommendations and season in recommendations[state]:
+        return recommendations[state][season]
     else:
-        print("Invalid state entered. Please try again.")
+        return []
+
+def get_price(crop):
+    return crop_prices.get(crop, 0)
